@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useAppTheme } from "../hooks/useAppTheme";
 import { radius, spacing, typography } from "../lib/theme";
@@ -11,13 +12,14 @@ interface AchievementListProps {
 
 export default function AchievementList({ achievements }: AchievementListProps) {
   const { colors, isDark } = useAppTheme();
+  const { t } = useTranslation();
 
   const unlockedCount = achievements.filter((a) => a.unlockedAt).length;
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.text }]}>Badges & Rewards</Text>
+        <Text style={[styles.title, { color: colors.text }]}>{t("achievements.title")}</Text>
         <Text style={[styles.count, { color: colors.primary }]}>{unlockedCount}/{achievements.length}</Text>
       </View>
 
@@ -51,13 +53,15 @@ export default function AchievementList({ achievements }: AchievementListProps) 
                 numberOfLines={1} 
                 style={[styles.badgeTitle, { color: isUnlocked ? colors.text : colors.textSecondary }]}
               >
-                {ach.title}
+                {t(`achievements.items.${ach.id}.title`, { defaultValue: ach.title })}
               </Text>
               <Text 
                 numberOfLines={2} 
                 style={[styles.badgeDesc, { color: colors.textTertiary }]}
               >
-                {isUnlocked ? ach.description : "Locked"}
+                {isUnlocked 
+                  ? t(`achievements.items.${ach.id}.desc`, { defaultValue: ach.description }) 
+                  : t("achievements.locked")}
               </Text>
               
               {isUnlocked && (

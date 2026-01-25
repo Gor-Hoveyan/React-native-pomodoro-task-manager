@@ -1,5 +1,6 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "../hooks/useAppTheme";
 import { radius, spacing, typography } from "./../lib/theme";
@@ -29,6 +30,7 @@ export default function TaskCard({
   onDragEnd,
 }: TaskCardProps) {
   const { colors, isDark } = useAppTheme();
+  const { t } = useTranslation();
   const [showActions, setShowActions] = useState(false);
   const [showMoveMenu, setShowMoveMenu] = useState(false);
 
@@ -150,8 +152,10 @@ export default function TaskCard({
                   styles.priorityBadgeText,
                   { color: pColors.text },
                 ]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
               >
-                {task.priority.toUpperCase()}
+                {t(`priorities.${task.priority}`).toUpperCase()}
               </Text>
             </View>
             <MaterialCommunityIcons
@@ -198,8 +202,7 @@ export default function TaskCard({
               },
             ]}
           >
-            {task.pomodoroCount || 0} Pomodoro
-            {task.pomodoroCount !== 1 ? "s" : ""}
+            {task.pomodoroCount || 0} {t("tree.stats.poms")}
           </Text>
         </View>
       </View>
@@ -229,7 +232,7 @@ export default function TaskCard({
                 color={colors.success}
               />
               <Text style={[styles.actionText, { color: colors.text }]}>
-                Complete
+                {t("tasks.actions.complete")}
               </Text>
             </TouchableOpacity>
 
@@ -246,7 +249,7 @@ export default function TaskCard({
                 color={colors.primary}
               />
               <Text style={[styles.actionText, { color: colors.text }]}>
-                Move to...
+                {t("tasks.actions.move_to")}
               </Text>
             </TouchableOpacity>
 
@@ -263,7 +266,7 @@ export default function TaskCard({
                 color={colors.primary}
               />
               <Text style={[styles.actionText, { color: colors.text }]}>
-                Edit Task
+                {t("tasks.actions.edit")}
               </Text>
             </TouchableOpacity>
 
@@ -280,7 +283,7 @@ export default function TaskCard({
                 color={colors.error}
               />
               <Text style={[styles.actionText, styles.dangerText]}>
-                Delete
+                {t("tasks.actions.delete")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -300,7 +303,7 @@ export default function TaskCard({
         >
           <View style={dynamicStyles.moveMenu}>
             <Text style={[styles.moveMenuTitle, { color: colors.text }]}>
-              Move to section
+              {t("tasks.actions.move_title")}
             </Text>
             {sections.map((section) => (
               <TouchableOpacity
@@ -411,10 +414,11 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   priorityBadge: {
-    paddingHorizontal: spacing.xs,
+    paddingHorizontal: spacing.sm,
     paddingVertical: 2,
     borderRadius: radius.sm,
     marginRight: spacing.xs,
+    maxWidth: 80,
   },
   priorityBadgeText: {
     fontSize: 10,

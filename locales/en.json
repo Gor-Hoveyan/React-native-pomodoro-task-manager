@@ -1,0 +1,190 @@
+{
+    "tabs": {
+        "growth": "Growth",
+        "tasks": "Tasks",
+        "settings": "Settings"
+    },
+    "common": {
+        "done": "Done",
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "loading": "Loading...",
+        "min": "min",
+        "generic_session": "Generic Session",
+        "m_ago": "{{count}}m ago",
+        "h_ago": "{{count}}h ago",
+        "level": "Level",
+        "lvl_short": "Lvl",
+        "xp_earned": "Earned {{count}} XP",
+        "confirm": "Confirm",
+        "days": {
+            "sun": "Sun",
+            "mon": "Mon",
+            "tue": "Tue",
+            "wed": "Wed",
+            "thu": "Thu",
+            "fri": "Fri",
+            "sat": "Sat"
+        }
+    },
+    "tree": {
+        "title": "Your Growth Tree",
+        "subtitle": "Complete tasks to grow your tree",
+        "stats": {
+            "level": "Level",
+            "tasks": "Tasks Done",
+            "poms": "Pomodoros",
+            "xp": "XP"
+        },
+        "growth_progress": "Growth Progress",
+        "next_level": "{{current}}/100 to next level",
+        "focus_on_task": "Focus on Task",
+        "timer_desc": "Complete a {{duration}}-minute Pomodoro session to earn 5 tree growth points",
+        "timer_desc_task": "Focus on \"{{title}}\" for {{duration}} min",
+        "start_session": "Start Focus Session",
+        "milestones": "Milestones",
+        "weekly_chart": "Weekly Workload",
+        "recent_activity": "Recent Activity",
+        "no_activity": "No recent activity",
+        "milestones_list": {
+            "blooming": "Blooming",
+            "mature_oak": "Mature Oak",
+            "forest_guardian": "Forest Guardian"
+        },
+        "tree_names": {
+            "seed": "Seed",
+            "sprout": "Sprout",
+            "seedling": "Seedling",
+            "sapling": "Sapling",
+            "young": "Young Tree",
+            "ancient": "Ancient Oak"
+        },
+        "stages": {
+            "seed": "Seed",
+            "sprout": "Sprout",
+            "seedling": "Seedling",
+            "sapling": "Sapling",
+            "young": "Young",
+            "ancient": "Ancient",
+            "stage_suffix": "Stage"
+        },
+        "timer": {
+            "focus": "Focus",
+            "break": "Break",
+            "done_status": "Done!",
+            "stay_focused": "Stay Focused",
+            "relaxing": "Relaxing",
+            "paused": "Paused",
+            "sessions_completed": "Sessions completed: {{count}}",
+            "collect_growth": "Collect Growth",
+            "go_to_focus": "Go to Focus",
+            "focus_tip": "Focus Tip",
+            "break_tip": "Break Tip",
+            "tip_focus_text": "Break down your big goal into tiny manageable tasks.",
+            "tip_break_text": "Stand up and stretch your back for 30 seconds."
+        },
+        "reach_level": "Reach Level {{level}}",
+        "session_title": "Pomodoro Session",
+        "level_up_msg": "Reached {{title}}!",
+        "sessions_desc": "1 session finished",
+        "focused_on_msg": "Focused on \"{{title}}\"",
+        "earning_mastery": "Earning mastery"
+    },
+    "tasks": {
+        "title": "Tasks",
+        "add_task": "Add task",
+        "add_section": "Add Section",
+        "no_tasks": "No tasks",
+        "todo": "Todo",
+        "in_progress": "In Progress",
+        "done": "Done",
+        "task_done": "Completed \"{{title}}\"",
+        "delete_task_title": "Delete Task",
+        "delete_task_msg": "Are you sure you want to delete \"{{title}}\"?",
+        "delete_section_title": "Delete Section",
+        "delete_section_msg": "Are you sure you want to delete \"{{name}}\"? All tasks inside will also be deleted.",
+        "actions": {
+            "complete": "Complete",
+            "move_to": "Move to...",
+            "delete": "Delete",
+            "edit": "Edit",
+            "move_title": "Move to section"
+        },
+        "form": {
+            "title": "Title",
+            "description": "Description (optional)",
+            "priority": "Priority",
+            "estimated_poms": "Estimated Pomodoros",
+            "placeholder_title": "What needs to be done?",
+            "placeholder_desc": "Add more details...",
+            "edit_task": "Edit Task",
+            "new_task": "New Task",
+            "save_changes": "Save Changes",
+            "sessions_done": "Sessions Done"
+        }
+    },
+    "priorities": {
+        "urgent": "Urgent",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+    },
+    "settings": {
+        "title": "Settings",
+        "timer_settings": "Timer Settings",
+        "focus_duration": "Focus Duration",
+        "short_break": "Short Break",
+        "long_break": "Long Break",
+        "alerts": "Notifications & Alerts",
+        "sound": "Sound Effects",
+        "sound_desc": "Play sound on timer completion",
+        "haptic": "Haptic Feedback",
+        "haptic_desc": "Subtle vibrations for interactions",
+        "dark_mode": "Dark Mode",
+        "dark_mode_desc": "Use a darker color palette",
+        "danger_zone": "Danger Zone",
+        "reset_data": "Reset All Data",
+        "reset_alert_title": "Reset All Data",
+        "reset_alert_msg": "Are you sure? This will delete all tasks, sections, and progress. This action cannot be undone.",
+        "language": "Language",
+        "select_language": "Select your preferred language"
+    },
+    "achievements": {
+        "title": "Badges & Rewards",
+        "locked": "Locked",
+        "unlocked_msg": "Achievement Unlocked: {{title}}",
+        "items": {
+            "1": {
+                "title": "First Sprout🌱",
+                "desc": "Complete your first Pomodoro session"
+            },
+            "2": {
+                "title": "Productive Start✅",
+                "desc": "Complete your first task"
+            },
+            "3": {
+                "title": "Deep Focus 🧠",
+                "desc": "Complete 10 Pomodoro sessions"
+            },
+            "4": {
+                "title": "Task Legend 🏆",
+                "desc": "Complete 10 tasks"
+            },
+            "5": {
+                "title": "Rising Star ✨",
+                "desc": "Reach Level 5"
+            },
+            "6": {
+                "title": "Forest Guardian 🌳",
+                "desc": "Reach Level 10"
+            },
+            "7": {
+                "title": "Workaholic 🔥",
+                "desc": "Complete 50 Pomodoros"
+            }
+        }
+    }
+}

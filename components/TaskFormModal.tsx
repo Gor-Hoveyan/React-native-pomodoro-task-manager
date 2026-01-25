@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Modal,
   ScrollView,
@@ -36,6 +37,7 @@ export default function TaskFormModal({
   initialData,
 }: TaskFormModalProps) {
   const { colors, isDark } = useAppTheme();
+  const { t } = useTranslation();
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [priority, setPriority] = React.useState<TaskPriority>("medium");
@@ -185,16 +187,16 @@ export default function TaskFormModal({
       <View style={dynamicStyles.container}>
         <View style={dynamicStyles.header}>
           <Text style={[styles.title, { color: colors.text }]}>
-            {initialData ? "Edit Task" : "New Task"}
+            {initialData ? t("tasks.form.edit_task") : t("tasks.form.new_task")}
           </Text>
         </View>
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.formGroup}>
-            <Text style={[styles.label, { color: colors.text }]}>Task Title</Text>
+            <Text style={[styles.label, { color: colors.text }]}>{t("tasks.form.title")}</Text>
             <TextInput
               style={dynamicStyles.input}
-              placeholder="Enter task title"
+              placeholder={t("tasks.form.placeholder_title")}
               placeholderTextColor={colors.textTertiary}
               value={title}
               onChangeText={setTitle}
@@ -203,10 +205,10 @@ export default function TaskFormModal({
           </View>
 
           <View style={styles.formGroup}>
-            <Text style={[styles.label, { color: colors.text }]}>Description</Text>
+            <Text style={[styles.label, { color: colors.text }]}>{t("tasks.form.description")}</Text>
             <TextInput
               style={[dynamicStyles.input, styles.textarea]}
-              placeholder="Add notes or details..."
+              placeholder={t("tasks.form.placeholder_desc")}
               placeholderTextColor={colors.textTertiary}
               value={description}
               onChangeText={setDescription}
@@ -217,7 +219,7 @@ export default function TaskFormModal({
           </View>
 
           <View style={styles.formGroup}>
-            <Text style={[styles.label, { color: colors.text }]}>Priority</Text>
+            <Text style={[styles.label, { color: colors.text }]}>{t("tasks.form.priority")}</Text>
             <View style={styles.priorityGrid}>
               {(["urgent", "high", "medium", "low"] as TaskPriority[]).map(
                 (p) => {
@@ -242,7 +244,7 @@ export default function TaskFormModal({
                           priority === p && { fontWeight: "700" },
                         ]}
                       >
-                        {p.charAt(0).toUpperCase() + p.slice(1)}
+                        {t(`priorities.${p}`)}
                       </Text>
                     </TouchableOpacity>
                   );
@@ -253,7 +255,7 @@ export default function TaskFormModal({
 
           <View style={styles.formGroup}>
             <Text style={[styles.label, { color: colors.text }]}>
-              Sessions Done
+              {t("tasks.form.sessions_done")}
             </Text>
             <View style={dynamicStyles.stepper}>
               <TouchableOpacity
@@ -273,7 +275,7 @@ export default function TaskFormModal({
                     { color: colors.textSecondary },
                   ]}
                 >
-                  Pomodoros
+                  {t("tree.stats.poms")}
                 </Text>
               </View>
 
@@ -295,7 +297,7 @@ export default function TaskFormModal({
             <Text
               style={[styles.cancelButtonText, { color: colors.textSecondary }]}
             >
-              Cancel
+              {t("common.cancel")}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -308,7 +310,7 @@ export default function TaskFormModal({
             disabled={!title.trim()}
           >
             <Text style={styles.addButtonText}>
-              {initialData ? "Save Changes" : "Add Task"}
+              {initialData ? t("tasks.form.save_changes") : t("tasks.add_task")}
             </Text>
           </TouchableOpacity>
         </View>

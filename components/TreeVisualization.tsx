@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import { useAppTheme } from "../hooks/useAppTheme";
 import { radius, spacing, typography } from "./../lib/theme";
@@ -13,6 +14,7 @@ export default function TreeVisualization({
   treeGrowth,
 }: TreeVisualizationProps) {
   const { colors, isDark } = useAppTheme();
+  const { t } = useTranslation();
 
   // Determine tree stage based on level
   const getTreeStage = () => {
@@ -86,15 +88,17 @@ export default function TreeVisualization({
           >
             {currentTree.icon}
           </Text>
-          <Text style={dynamicStyles.treeLabel}>{currentTree.label}</Text>
+          <Text style={dynamicStyles.treeLabel} numberOfLines={1}>
+            {t(`tree.tree_names.${stage}`, { defaultValue: currentTree.label })}
+          </Text>
         </View>
       </View>
       <View style={styles.treeInfo}>
         <Text style={[styles.levelText, { color: colors.primary }]}>
-          Level {level}
+          {t("common.level")} {level}
         </Text>
         <Text style={[styles.stageText, { color: colors.textSecondary }]}>
-          {stage.charAt(0).toUpperCase() + stage.slice(1)} Stage
+          {t(`tree.stages.${stage}`)} {t("tree.stages.stage_suffix")}
         </Text>
       </View>
     </View>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useAppTheme } from "../hooks/useAppTheme";
 import { radius, spacing, typography } from "../lib/theme";
@@ -25,6 +26,10 @@ export default function ConfirmModal({
   isDestructive = false,
 }: ConfirmModalProps) {
   const { colors, isDark } = useAppTheme();
+  const { t } = useTranslation();
+
+  const finalConfirmText = confirmText === "Confirm" ? t("common.save") : confirmText;
+  const finalCancelText = cancelText === "Cancel" ? t("common.cancel") : cancelText;
 
   return (
     <Modal
@@ -43,7 +48,7 @@ export default function ConfirmModal({
               style={[styles.button, styles.cancelButton, { borderColor: colors.border }]} 
               onPress={onCancel}
             >
-              <Text style={[styles.cancelText, { color: colors.textSecondary }]}>{cancelText}</Text>
+              <Text style={[styles.cancelText, { color: colors.textSecondary }]}>{finalCancelText}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity 
@@ -54,7 +59,7 @@ export default function ConfirmModal({
               ]} 
               onPress={onConfirm}
             >
-              <Text style={styles.confirmButtonText}>{confirmText}</Text>
+              <Text style={styles.confirmButtonText}>{finalConfirmText}</Text>
             </TouchableOpacity>
           </View>
         </View>

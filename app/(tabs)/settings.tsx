@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   SafeAreaView,
@@ -23,19 +24,21 @@ export default function SettingsScreen() {
     theme, toggleTheme,
     soundEnabled, setSoundEnabled,
     hapticsEnabled, setHapticsEnabled,
+    language, setLanguage,
     reset
   } = usePomodoroStore();
   
   const { colors, isDark } = useAppTheme();
+  const { t } = useTranslation();
 
   const resetAllData = () => {
     Alert.alert(
-      "Reset All Data",
-      "Are you sure? This will delete all tasks, sections, and progress. This action cannot be undone.",
+      t("settings.reset_data"),
+      t("settings.reset_alert_msg"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("common.cancel"), style: "cancel" },
         {
-          text: "Reset",
+          text: t("common.delete"),
           style: "destructive",
           onPress: async () => {
             try {
@@ -64,196 +67,264 @@ export default function SettingsScreen() {
   const dynamicStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors.surface,
+      backgroundColor: colors.surfaceVariant,
     },
     header: {
       paddingHorizontal: spacing.md,
       paddingVertical: spacing.lg,
+      backgroundColor: colors.surface,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
     },
-    section: {
-      paddingHorizontal: spacing.md,
-      paddingVertical: spacing.lg,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.borderLight,
-    },
-    durationButton: {
-      flex: 1,
-      marginHorizontal: spacing.xs,
-      paddingVertical: spacing.md,
+    card: {
+      backgroundColor: colors.surface,
       borderRadius: radius.lg,
-      borderWidth: 2,
+      padding: spacing.md,
+      borderWidth: isDark ? 1 : 0,
       borderColor: colors.border,
-      backgroundColor: colors.surfaceVariant,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    durationButtonActive: {
-      borderColor: colors.primary,
-      backgroundColor: colors.primary,
-    },
-    durationButtonText: {
-      ...typography.h3,
-      color: colors.text,
-    },
-    durationButtonTextActive: {
-      color: "#ffffff",
-    },
-    durationButtonLabel: {
-      ...typography.caption,
-      color: colors.textSecondary,
-    },
-    durationButtonLabelActive: {
-      color: "#ffffff",
-    },
-    switchRow: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: spacing.md,
     },
     resetButton: {
       flexDirection: "row",
       alignItems: "center",
       paddingHorizontal: spacing.md,
       paddingVertical: spacing.md,
-      backgroundColor: isDark ? "#7f1d1d" : "#fee2e2",
+      backgroundColor: isDark ? "#7f1d1d30" : "#fee2e2",
       borderRadius: radius.lg,
-      marginBottom: spacing.md,
       gap: spacing.md,
-    },
-    resetButtonText: {
-      ...typography.body,
-      color: isDark ? "#fecaca" : colors.error,
-      fontWeight: "600",
+      borderWidth: isDark ? 1 : 0,
+      borderColor: "#7f1d1d",
     },
   });
-
-  const DurationSelector = ({ label, value, onSelect, options }: any) => (
-    <View style={{ marginBottom: spacing.lg }}>
-      <Text style={[styles.sectionSubtitle, { color: colors.textSecondary }]}>{label}</Text>
-      <View style={styles.durationGrid}>
-        {options.map((opt: number) => (
-          <TouchableOpacity
-            key={opt}
-            style={[
-              dynamicStyles.durationButton,
-              value === opt && dynamicStyles.durationButtonActive,
-            ]}
-            onPress={() => onSelect(opt)}
-          >
-            <Text style={[dynamicStyles.durationButtonText, value === opt && dynamicStyles.durationButtonTextActive]}>
-              {opt}
-            </Text>
-            <Text style={[dynamicStyles.durationButtonLabel, value === opt && dynamicStyles.durationButtonLabelActive]}>
-              min
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-  );
 
   return (
     <SafeAreaView style={dynamicStyles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={dynamicStyles.header}>
-          <Text style={[styles.title, { color: colors.text }]}>Settings</Text>
+          <Text style={[styles.title, { color: colors.text }]}>{t("settings.title")}</Text>
         </View>
 
-        {/* Durations Section */}
-        <View style={dynamicStyles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            ⏱️ Timer Settings
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+            {t("settings.timer_settings")}
           </Text>
-          
-          <DurationSelector 
-            label="Focus Duration" 
-            value={pomodoroDuration} 
-            onSelect={setPomodoroDuration} 
-            options={[15, 25, 45, 60]} 
-          />
-          
-          <DurationSelector 
-            label="Short Break" 
-            value={shortBreakDuration} 
-            onSelect={setShortBreakDuration} 
-            options={[3, 5, 10, 15]} 
-          />
+          <View style={dynamicStyles.card}>
+            <View style={styles.settingRow}>
+              <View>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>
+                  {t("settings.focus_duration")}
+                </Text>
+                <Text style={[styles.settingDesc, { color: colors.textTertiary }]}>
+                  {pomodoroDuration} {t("common.min")}
+                </Text>
+              </View>
+              <View style={styles.pickerContainer}>
+                {[15, 25, 45, 60].map((d) => (
+                  <TouchableOpacity
+                    key={d}
+                    onPress={() => setPomodoroDuration(d)}
+                    style={[
+                      styles.pickerButton,
+                      { backgroundColor: colors.surfaceVariant },
+                      pomodoroDuration === d && { backgroundColor: colors.primary },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.pickerButtonText,
+                        { color: colors.textSecondary },
+                        pomodoroDuration === d && { color: "#ffffff" },
+                      ]}
+                    >
+                      {d}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
 
-          <DurationSelector 
-            label="Long Break" 
-            value={longBreakDuration} 
-            onSelect={setLongBreakDuration} 
-            options={[15, 20, 30, 45]} 
-          />
+            <View style={styles.divider} />
+
+            <View style={styles.settingRow}>
+              <View>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>
+                  {t("settings.short_break")}
+                </Text>
+                <Text style={[styles.settingDesc, { color: colors.textTertiary }]}>
+                  {shortBreakDuration} {t("common.min")}
+                </Text>
+              </View>
+              <View style={styles.pickerContainer}>
+                {[3, 5, 10, 15].map((d) => (
+                  <TouchableOpacity
+                    key={d}
+                    onPress={() => setShortBreakDuration(d)}
+                    style={[
+                      styles.pickerButton,
+                      { backgroundColor: colors.surfaceVariant },
+                      shortBreakDuration === d && { backgroundColor: colors.primary },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.pickerButtonText,
+                        { color: colors.textSecondary },
+                        shortBreakDuration === d && { color: "#ffffff" },
+                      ]}
+                    >
+                      {d}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.settingRow}>
+              <View>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>
+                  {t("settings.long_break")}
+                </Text>
+                <Text style={[styles.settingDesc, { color: colors.textTertiary }]}>
+                  {longBreakDuration} {t("common.min")}
+                </Text>
+              </View>
+              <View style={styles.pickerContainer}>
+                {[15, 20, 30, 45].map((d) => (
+                  <TouchableOpacity
+                    key={d}
+                    onPress={() => setLongBreakDuration(d)}
+                    style={[
+                      styles.pickerButton,
+                      { backgroundColor: colors.surfaceVariant },
+                      longBreakDuration === d && { backgroundColor: colors.primary },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.pickerButtonText,
+                        { color: colors.textSecondary },
+                        longBreakDuration === d && { color: "#ffffff" },
+                      ]}
+                    >
+                      {d}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </View>
         </View>
 
-        {/* Preferences Section */}
-        <View style={dynamicStyles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            🔔 Notifications & Alerts
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+            {t("settings.language")}
           </Text>
-          
-          <View style={dynamicStyles.switchRow}>
-            <View>
-              <Text style={[typography.body, { color: colors.text }]}>Sound Effects</Text>
-              <Text style={[typography.caption, { color: colors.textSecondary }]}>Play sound on timer completion</Text>
+          <View style={dynamicStyles.card}>
+            <View style={styles.languageContainer}>
+              {[
+                { id: 'en', label: 'English' },
+                { id: 'hy', label: 'Հայերեն' },
+                { id: 'ru', label: 'Русский' }
+              ].map((lang) => (
+                <TouchableOpacity
+                  key={lang.id}
+                  onPress={() => setLanguage(lang.id as any)}
+                  style={[
+                    styles.langButton,
+                    { backgroundColor: colors.surfaceVariant },
+                    language === lang.id && { backgroundColor: colors.primary }
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.langButtonText,
+                      { color: colors.textSecondary },
+                      language === lang.id && { color: "#ffffff", fontWeight: '700' }
+                    ]}
+                  >
+                    {lang.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
-            <Switch
-              value={soundEnabled}
-              onValueChange={setSoundEnabled}
-              trackColor={{ false: colors.border, true: colors.primary }}
-              thumbColor="#ffffff"
-            />
-          </View>
-
-          <View style={dynamicStyles.switchRow}>
-            <View>
-              <Text style={[typography.body, { color: colors.text }]}>Haptic Feedback</Text>
-              <Text style={[typography.caption, { color: colors.textSecondary }]}>Subtle vibrations for interactions</Text>
-            </View>
-            <Switch
-              value={hapticsEnabled}
-              onValueChange={setHapticsEnabled}
-              trackColor={{ false: colors.border, true: colors.primary }}
-              thumbColor="#ffffff"
-            />
-          </View>
-        </View>
-
-        {/* Theme Section */}
-        <View style={dynamicStyles.section}>
-           <View style={dynamicStyles.switchRow}>
-            <View>
-              <Text style={[styles.sectionTitle, { color: colors.text, marginBottom: 0 }]}>🎨 Dark Mode</Text>
-              <Text style={[styles.sectionDescription, { color: colors.textSecondary, marginBottom: 0 }]}>Use a darker color palette</Text>
-            </View>
-            <Switch
-              value={theme === "dark"}
-              onValueChange={toggleTheme}
-              trackColor={{ false: colors.border, true: colors.primary }}
-              thumbColor="#ffffff"
-            />
           </View>
         </View>
 
-        {/* Reset Section */}
-        <View style={dynamicStyles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            ⚠️ Danger Zone
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+            {t("settings.alerts")}
+          </Text>
+          <View style={dynamicStyles.card}>
+            <View style={styles.settingRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>
+                  {t("settings.sound")}
+                </Text>
+                <Text style={[styles.settingDesc, { color: colors.textTertiary }]}>
+                  {t("settings.sound_desc")}
+                </Text>
+              </View>
+              <Switch
+                value={soundEnabled}
+                onValueChange={setSoundEnabled}
+                trackColor={{ false: colors.border, true: colors.primary + "80" }}
+                thumbColor={soundEnabled ? colors.primary : "#f4f3f4"}
+              />
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.settingRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>
+                  {t("settings.haptic")}
+                </Text>
+                <Text style={[styles.settingDesc, { color: colors.textTertiary }]}>
+                  {t("settings.haptic_desc")}
+                </Text>
+              </View>
+              <Switch
+                value={hapticsEnabled}
+                onValueChange={setHapticsEnabled}
+                trackColor={{ false: colors.border, true: colors.primary + "80" }}
+                thumbColor={hapticsEnabled ? colors.primary : "#f4f3f4"}
+              />
+            </View>
+            
+            <View style={styles.divider} />
+
+            <View style={styles.settingRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>
+                  {t("settings.dark_mode")}
+                </Text>
+                <Text style={[styles.settingDesc, { color: colors.textTertiary }]}>
+                  {t("settings.dark_mode_desc")}
+                </Text>
+              </View>
+              <Switch
+                value={isDark}
+                onValueChange={toggleTheme}
+                trackColor={{ false: colors.border, true: colors.primary + "80" }}
+                thumbColor={isDark ? colors.primary : "#f4f3f4"}
+              />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+            {t("settings.danger_zone")}
           </Text>
           <TouchableOpacity
             style={dynamicStyles.resetButton}
             onPress={resetAllData}
           >
-            <Ionicons
-              name="trash"
-              size={20}
-              color={isDark ? "#fecaca" : colors.error}
-            />
-            <Text style={dynamicStyles.resetButtonText}>Reset All Data</Text>
+            <Ionicons name="trash-outline" size={20} color={colors.error} />
+            <Text style={[styles.resetButtonText, { color: colors.error }]}>
+              {t("settings.reset_data")}
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -267,22 +338,68 @@ const styles = StyleSheet.create({
   title: {
     ...typography.h2,
   },
-  sectionTitle: {
-    ...typography.h3,
-    marginBottom: spacing.md,
+  section: {
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.lg,
   },
-  sectionSubtitle: {
+  sectionTitle: {
     ...typography.caption,
     fontWeight: "700",
     marginBottom: spacing.sm,
     textTransform: "uppercase",
     letterSpacing: 1,
+    marginLeft: spacing.xs,
   },
-  sectionDescription: {
-    ...typography.bodySmall,
-  },
-  durationGrid: {
+  settingRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+  },
+  settingLabel: {
+    ...typography.body,
+    fontWeight: "600",
+  },
+  settingDesc: {
+    ...typography.caption,
+    marginTop: 2,
+  },
+  pickerContainer: {
+    flexDirection: "row",
+    gap: spacing.xs,
+  },
+  pickerButton: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pickerButtonText: {
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "rgba(0,0,0,0.05)",
+    marginVertical: spacing.md,
+  },
+  languageContainer: {
+    flexDirection: "row",
+    gap: spacing.sm,
+  },
+  langButton: {
+    flex: 1,
+    paddingVertical: spacing.md,
+    borderRadius: radius.md,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  langButtonText: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  resetButtonText: {
+    ...typography.body,
+    fontWeight: "600",
   },
 });

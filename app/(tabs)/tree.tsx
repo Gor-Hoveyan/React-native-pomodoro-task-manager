@@ -1,6 +1,7 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Animated,
   ScrollView,
@@ -37,6 +38,7 @@ export default function TreeScreen() {
   const { colors, isDark } = useAppTheme();
   const { triggerHaptic } = useNotifications();
   const { pomodoroDuration } = useAppStore();
+  const { t } = useTranslation();
   
   const [progress, setProgress] = useState<UserProgress | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -105,7 +107,7 @@ export default function TreeScreen() {
       
       // Log Activity
       const taskTitle = allTasks.find(t => t.id === selectedTaskId)?.title;
-      await addActivity("pomodoro_complete", `Focused on "${taskTitle}"`, "1 session finished", 1);
+      await addActivity("pomodoro_complete", t("tree.focused_on_msg", { title: taskTitle }), t("tree.sessions_desc"), 1);
       await recordPomodoro();
       
       triggerHaptic("success");
@@ -126,10 +128,9 @@ export default function TreeScreen() {
         newProgress.level += 1;
         newProgress.treeGrowth -= 100;
         newProgress.totalXP += 50;
-        await addActivity("level_up", `Reached Level ${newProgress.level}!`, "Your tree is growing stronger", 50);
+        await addActivity("level_up", t("tree.level_up_msg", { title: `${t("common.level")} ${newProgress.level}` }), t("tree.earning_mastery"), 50);
       }
-      
-      await addActivity("pomodoro_complete", "Generic Focus Session", "1 session finished", 1);
+      await addActivity("pomodoro_complete", t("common.generic_session"), t("tree.sessions_desc"), 1);
       await recordPomodoro();
 
       setProgress(newProgress);
@@ -220,7 +221,7 @@ export default function TreeScreen() {
       <SafeAreaView edges={["top", "bottom"]} style={dynamicStyles.container}>
         <View style={styles.loadingState}>
           <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
-            Loading...
+            {t("common.loading")}
           </Text>
         </View>
       </SafeAreaView>
@@ -232,10 +233,10 @@ export default function TreeScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={dynamicStyles.header}>
           <Text style={[styles.title, { color: colors.text }]}>
-            Your Growth Tree
+            {t("tree.title")}
           </Text>
           <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-            Complete tasks to grow your tree
+            {t("tree.subtitle")}
           </Text>
         </View>
 
@@ -258,8 +259,12 @@ export default function TreeScreen() {
             <Text style={[styles.statValue, { color: colors.primary }]}>
               {progress.level}
             </Text>
-            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
-              Level
+            <Text 
+              style={[styles.statLabel, { color: colors.textSecondary }]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+            >
+              {t("tree.stats.level")}
             </Text>
           </View>
           <View style={dynamicStyles.statCard}>
@@ -271,8 +276,12 @@ export default function TreeScreen() {
             <Text style={[styles.statValue, { color: colors.primary }]}>
               {progress.totalTasksCompleted}
             </Text>
-            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
-              Tasks Done
+            <Text 
+              style={[styles.statLabel, { color: colors.textSecondary }]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+            >
+              {t("tree.stats.tasks")}
             </Text>
           </View>
           <View style={dynamicStyles.statCard}>
@@ -284,8 +293,12 @@ export default function TreeScreen() {
             <Text style={[styles.statValue, { color: colors.primary }]}>
               {progress.totalPomodoros}
             </Text>
-            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
-              Pomodoros
+            <Text 
+              style={[styles.statLabel, { color: colors.textSecondary }]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+            >
+              {t("tree.stats.poms")}
             </Text>
           </View>
           <View style={dynamicStyles.statCard}>
@@ -297,15 +310,19 @@ export default function TreeScreen() {
             <Text style={[styles.statValue, { color: colors.primary }]}>
               {progress.totalXP}
             </Text>
-            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
-              XP
+            <Text 
+              style={[styles.statLabel, { color: colors.textSecondary }]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+            >
+              {t("tree.stats.xp")}
             </Text>
           </View>
         </View>
 
         <View style={styles.growthSection}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            Growth Progress
+            {t("tree.growth_progress")}
           </Text>
           <View style={dynamicStyles.progressContainer}>
             <View style={dynamicStyles.progressBar}>
@@ -320,7 +337,7 @@ export default function TreeScreen() {
               />
             </View>
             <Text style={[styles.progressText, { color: colors.textSecondary }]}>
-              {progress.treeGrowth}/100 to next level
+              {t("tree.next_level", { current: progress.treeGrowth })}
             </Text>
           </View>
         </View>
@@ -333,7 +350,7 @@ export default function TreeScreen() {
 
         <View style={styles.pomodoroSection}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            Focus on Task
+            {t("tree.focus_on_task")}
           </Text>
           <ScrollView
             horizontal
@@ -356,7 +373,7 @@ export default function TreeScreen() {
                     : { color: colors.text },
                 ]}
               >
-                Generic Session
+                {t("common.generic_session")}
               </Text>
             </TouchableOpacity>
             {tasks.map((task) => (
@@ -375,6 +392,7 @@ export default function TreeScreen() {
                       ? { color: "#ffffff" }
                       : { color: colors.text },
                   ]}
+                  numberOfLines={1}
                 >
                   {task.title}
                 </Text>
@@ -413,7 +431,7 @@ export default function TreeScreen() {
               { color: colors.text, marginTop: spacing.lg },
             ]}
           >
-            Pomodoro Session
+            {t("tree.session_title")}
           </Text>
           <Text
             style={[
@@ -422,34 +440,35 @@ export default function TreeScreen() {
             ]}
           >
             {selectedTaskId
-              ? `Focus on "${
-                  tasks.find((t) => t.id === selectedTaskId)?.title
-                }" for ${pomodoroDuration} min`
-              : `Complete a ${pomodoroDuration}-minute Pomodoro session to earn 5 tree growth points`}
+              ? t("tree.timer_desc_task", { 
+                  title: tasks.find((t) => t.id === selectedTaskId)?.title || "",
+                  duration: pomodoroDuration 
+                })
+              : t("tree.timer_desc", { duration: pomodoroDuration })}
           </Text>
           <TouchableOpacity
             style={[styles.pomodoroButton, { backgroundColor: colors.primary }]}
             onPress={handleStartPomodoro}
           >
             <MaterialCommunityIcons name="play" size={24} color="#ffffff" />
-            <Text style={styles.pomodoroButtonText}>Start Focus Session</Text>
+            <Text style={styles.pomodoroButtonText}>{t("tree.start_session")}</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.milestoneSection}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            Milestones
+            {t("tree.milestones")}
           </Text>
           <View style={dynamicStyles.milestoneList}>
             {[
-              { level: 1, title: "Sprout", description: "Reach level 1" },
-              { level: 5, title: "Seedling", description: "Reach level 5" },
-              { level: 10, title: "Sapling", description: "Reach level 10" },
-              { level: 20, title: "Young Tree", description: "Reach level 20" },
+              { level: 1, title: t("tree.tree_names.sprout"), description: t("tree.reach_level", { level: 1 }) },
+              { level: 5, title: t("tree.milestones_list.blooming"), description: t("tree.reach_level", { level: 5 }) },
+              { level: 10, title: t("tree.milestones_list.mature_oak"), description: t("tree.reach_level", { level: 10 }) },
+              { level: 20, title: t("tree.milestones_list.forest_guardian"), description: t("tree.reach_level", { level: 20 }) },
               {
                 level: 50,
-                title: "Ancient Oak",
-                description: "Reach level 50",
+                title: t("tree.tree_names.ancient"),
+                description: t("tree.reach_level", { level: 50 }),
               },
             ].map((milestone, index) => (
               <View
@@ -494,7 +513,7 @@ export default function TreeScreen() {
                       : { color: colors.textTertiary },
                   ]}
                 >
-                  Lvl {milestone.level}
+                  {t("common.lvl_short")} {milestone.level}
                 </Text>
               </View>
             ))}
@@ -602,6 +621,7 @@ const styles = StyleSheet.create({
   taskChipText: {
     ...typography.bodySmall,
     fontWeight: "600",
+    maxWidth: 150,
   },
   taskPomodoroTag: {
     borderRadius: radius.sm,

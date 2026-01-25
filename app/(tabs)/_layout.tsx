@@ -1,14 +1,16 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useTranslation } from "react-i18next";
 import { useAppTheme } from "../../hooks/useAppTheme";
-import TasksScreen from "./index";
 import SettingsScreen from "./settings";
+import TasksScreen from "./tasks";
 import TreeScreen from "./tree";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabsLayout() {
   const { colors, isDark } = useAppTheme();
+  const { t } = useTranslation();
 
   return (
     <Tab.Navigator
@@ -19,7 +21,7 @@ export default function TabsLayout() {
           if (route.name === "Tree") iconName = "tree";
           if (route.name === "Settings") iconName = "cog";
           return (
-            <MaterialCommunityIcons name={iconName} size={size} color={color} />
+            <MaterialCommunityIcons name={iconName as any} size={size} color={color} />
           );
         },
         tabBarActiveTintColor: colors.primary,
@@ -36,9 +38,21 @@ export default function TabsLayout() {
         },
       })}
     >
-      <Tab.Screen name="Tasks" component={TasksScreen} />
-      <Tab.Screen name="Tree" component={TreeScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen 
+        name="Tasks" 
+        component={TasksScreen} 
+        options={{ tabBarLabel: t("tabs.tasks") }} 
+      />
+      <Tab.Screen 
+        name="Tree" 
+        component={TreeScreen} 
+        options={{ tabBarLabel: t("tabs.growth") }} 
+      />
+      <Tab.Screen 
+        name="Settings" 
+        component={SettingsScreen} 
+        options={{ tabBarLabel: t("tabs.settings") }} 
+      />
     </Tab.Navigator>
   );
 }

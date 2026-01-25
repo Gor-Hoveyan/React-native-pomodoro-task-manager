@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import { useAppTheme } from "../hooks/useAppTheme";
 import { radius, spacing, typography } from "../lib/theme";
@@ -9,9 +10,10 @@ interface ProductivityChartProps {
 
 export default function ProductivityChart({ data }: ProductivityChartProps) {
   const { colors, isDark } = useAppTheme();
+  const { t } = useTranslation();
 
   // Get last 7 days names
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayNames = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
   const last7Days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
@@ -22,11 +24,11 @@ export default function ProductivityChart({ data }: ProductivityChartProps) {
     const day = String(d.getDate()).padStart(2, "0");
     const dateStr = `${year}-${month}-${day}`;
     
-    const dayName = days[d.getDay()];
-    const stat = data.find((s) => s.date === dateStr);
+    const found = data.find((s) => s.date === dateStr);
     return {
-      day: dayName,
-      count: stat ? stat.count : 0,
+      date: dateStr,
+      label: dayNames[d.getDay()],
+      count: found ? found.count : 0,
       isToday: i === 6,
     };
   });
@@ -35,13 +37,13 @@ export default function ProductivityChart({ data }: ProductivityChartProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: colors.text }]}>Weekly Workload</Text>
+      <Text style={[styles.title, { color: colors.text }]}>{t("tree.weekly_chart")}</Text>
       
       <View style={styles.chartArea}>
         <View style={styles.yAxis}>
-          <Text style={[styles.axisLabel, { color: colors.textTertiary }]}>{maxCount}</Text>
-          <Text style={[styles.axisLabel, { color: colors.textTertiary }]}>{Math.floor(maxCount / 2)}</Text>
-          <Text style={[styles.axisLabel, { color: colors.textTertiary }]}>0</Text>
+          <Text style={[styles.axisLabel, { color: colors.textTertiary }]} numberOfLines={1} adjustsFontSizeToFit>{maxCount}</Text>
+          <Text style={[styles.axisLabel, { color: colors.textTertiary }]} numberOfLines={1} adjustsFontSizeToFit>{Math.floor(maxCount / 2)}</Text>
+          <Text style={[styles.axisLabel, { color: colors.textTertiary }]} numberOfLines={1} adjustsFontSizeToFit>0</Text>
         </View>
 
         <View style={styles.barsContainer}>
@@ -66,8 +68,10 @@ export default function ProductivityChart({ data }: ProductivityChartProps) {
                     { color: day.isToday ? colors.primary : colors.textSecondary },
                     day.isToday && { fontWeight: "700" },
                   ]}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
                 >
-                  {day.day}
+                  {t(`common.days.${day.label}`)}
                 </Text>
               </View>
             );

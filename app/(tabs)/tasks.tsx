@@ -1,6 +1,7 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Animated,
   Dimensions,
@@ -40,6 +41,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 export default function TasksScreen() {
   const { colors, isDark } = useAppTheme();
   const { triggerHaptic } = useNotifications();
+  const { t } = useTranslation();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [sections, setSections] = useState<TaskSection[]>([]);
   const [progress, setProgress] = useState<UserProgress | null>(null);
@@ -216,8 +218,8 @@ export default function TasksScreen() {
       visible: true,
       type: "task",
       id: taskId,
-      title: "Delete Task",
-      message: `Are you sure you want to delete "${task?.title || "this task"}"?`,
+      title: t("tasks.delete_task_title"),
+      message: t("tasks.delete_task_msg", { title: task?.title || "" }),
     });
     triggerHaptic("warning");
   };
@@ -228,8 +230,8 @@ export default function TasksScreen() {
       visible: true,
       type: "section",
       id: sectionId,
-      title: "Delete Section",
-      message: `Are you sure you want to delete "${section?.name || "this section"}"? All tasks inside will also be deleted.`,
+      title: t("tasks.delete_section_title"),
+      message: t("tasks.delete_section_msg", { name: section?.name || "" }),
     });
   };
 
@@ -284,10 +286,10 @@ export default function TasksScreen() {
         newProgress.level += 1;
         newProgress.treeGrowth -= 100;
         newProgress.totalXP += 50; // Level up bonus
-        await addActivity("level_up", `Reached Level ${newProgress.level}!`, "Earning mastery", 50);
+        await addActivity("level_up", t("tree.level_up_msg", { title: `${t("common.level")} ${newProgress.level}` }), t("tree.earning_mastery"), 50);
       }
 
-      await addActivity("task_done", `Completed "${task.title}"`, `Earned ${xpToAward} XP`, xpToAward);
+      await addActivity("task_done", t("tasks.task_done", { title: task.title }), t("common.xp_earned", { count: xpToAward }), xpToAward);
 
       // Record total effort to stats (minimum 1 point for finishing a task)
       const effortToRecord = Math.max(1, pomsSpent);
@@ -393,13 +395,13 @@ export default function TasksScreen() {
   return (
     <SafeAreaView edges={["top", "bottom"]} style={dynamicStyles.container}>
       <View style={dynamicStyles.header}>
-        <Text style={[styles.title, { color: colors.text }]}>Tasks</Text>
+        <Text style={[styles.title, { color: colors.text }]}>{t("tasks.title")}</Text>
         {progress && (
           <View style={styles.statsRow}>
             <View style={dynamicStyles.stat}>
               <MaterialCommunityIcons name="star" size={16} color={colors.warning} />
               <Text style={[styles.statText, { color: colors.text }]}>
-                Level {progress.level}
+                {t("tree.stats.level")} {progress.level}
               </Text>
             </View>
             <View style={dynamicStyles.stat}>
@@ -438,7 +440,11 @@ export default function TasksScreen() {
                 style={[styles.sectionHeader, { borderTopColor: section.color }]}
                 onLongPress={() => handleDeleteSection(section.id)}
               >
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>{section.name}</Text>
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                  {section.name === "Todo" ? t("tasks.todo") : 
+                   section.name === "In Progress" ? t("tasks.in_progress") :
+                   section.name === "Done" ? t("tasks.done") : section.name}
+                </Text>
                 <Text style={dynamicStyles.sectionCount}>{getTasksForSection(section.id).length}</Text>
               </TouchableOpacity>
 
@@ -467,7 +473,7 @@ export default function TasksScreen() {
                 )}
                 ListEmptyComponent={
                   <View style={styles.emptyState}>
-                    <Text style={[styles.emptyText, { color: colors.textTertiary }]}>No tasks</Text>
+                    <Text style={[styles.emptyText, { color: colors.textTertiary }]}>{t("tasks.no_tasks")}</Text>
                   </View>
                 }
               />
@@ -477,7 +483,7 @@ export default function TasksScreen() {
                 onPress={() => { setSelectedSectionId(section.id); setShowTaskForm(true); }}
               >
                 <MaterialCommunityIcons name="plus" size={20} color={colors.primary} />
-                <Text style={[styles.addTaskText, { color: colors.primary }]}>Add task</Text>
+                <Text style={[styles.addTaskText, { color: colors.primary }]}>{t("tasks.add_task")}</Text>
               </TouchableOpacity>
             </View>
           );
@@ -485,7 +491,7 @@ export default function TasksScreen() {
 
         <TouchableOpacity style={dynamicStyles.addSectionButton} onPress={() => setShowSectionEditor(true)}>
           <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
-          <Text style={[styles.addSectionText, { color: colors.primary }]}>Add Section</Text>
+          <Text style={[styles.addSectionText, { color: colors.primary }]}>{t("tasks.add_section")}</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -518,7 +524,7 @@ export default function TasksScreen() {
         onConfirm={confirmDelete}
         onCancel={() => setDeleteDialog((prev) => ({ ...prev, visible: false }))}
         isDestructive
-        confirmText="Delete"
+        confirmText={t("common.delete")}
       />
     </SafeAreaView>
   );

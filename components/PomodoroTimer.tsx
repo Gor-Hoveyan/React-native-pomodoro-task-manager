@@ -1,5 +1,6 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Animated,
   Modal,
@@ -28,6 +29,7 @@ export default function PomodoroTimer({
 }: PomodoroTimerProps) {
   const { colors, isDark } = useAppTheme();
   const { triggerHaptic } = useNotifications();
+  const { t } = useTranslation();
   const { 
     pomodoroDuration, 
     shortBreakDuration, 
@@ -134,10 +136,13 @@ export default function PomodoroTimer({
       fontWeight: "500",
     },
     modeButton: {
-      paddingHorizontal: spacing.md,
+      flex: 1,
+      paddingHorizontal: spacing.sm,
       paddingVertical: spacing.sm,
       borderRadius: radius.full,
       backgroundColor: isDark ? colors.surfaceVariant : "#f3f4f6",
+      alignItems: "center",
+      justifyContent: "center",
     },
     modeButtonActive: {
       backgroundColor: mode === "focus" ? colors.primary : colors.success,
@@ -161,13 +166,25 @@ export default function PomodoroTimer({
                 style={[dynamicStyles.modeButton, mode === "focus" && dynamicStyles.modeButtonActive]}
                 onPress={() => { setMode("focus"); triggerHaptic("light"); }}
               >
-                <Text style={{ color: mode === "focus" ? "#ffffff" : colors.textSecondary, fontWeight: "600" }}>Focus</Text>
+                <Text 
+                  style={{ color: mode === "focus" ? "#ffffff" : colors.textSecondary, fontWeight: "600" }}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                >
+                  {t("tree.timer.focus")}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={[dynamicStyles.modeButton, mode.includes("Break") && dynamicStyles.modeButtonActive]}
                 onPress={() => { setMode("shortBreak"); triggerHaptic("light"); }}
               >
-                <Text style={{ color: mode.includes("Break") ? "#ffffff" : colors.textSecondary, fontWeight: "600" }}>Break</Text>
+                <Text 
+                  style={{ color: mode.includes("Break") ? "#ffffff" : colors.textSecondary, fontWeight: "600" }}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                >
+                  {t("tree.timer.break")}
+                </Text>
               </TouchableOpacity>
             </View>
             <View style={{ width: 24 }} />
@@ -191,8 +208,16 @@ export default function PomodoroTimer({
               >
                 <View style={styles.timerInner}>
                   <Text style={styles.timeText}>{formatTime(timeLeft)}</Text>
-                  <Text style={dynamicStyles.timerLabel}>
-                    {timeLeft === 0 ? "Done!" : isRunning ? (mode === "focus" ? "Stay Focused" : "Relaxing") : "Paused"}
+                  <Text 
+                    style={dynamicStyles.timerLabel}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                  >
+                    {timeLeft === 0 
+                      ? t("tree.timer.done_status") 
+                      : isRunning 
+                        ? (mode === "focus" ? t("tree.timer.stay_focused") : t("tree.timer.relaxing")) 
+                        : t("tree.timer.paused")}
                   </Text>
                 </View>
               </View>
@@ -215,7 +240,7 @@ export default function PomodoroTimer({
           
           <View style={styles.statsInline}>
              <MaterialCommunityIcons name="trophy" size={16} color={colors.warning} />
-             <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Sessions completed: {sessionCount}</Text>
+             <Text style={{ color: colors.textSecondary, fontSize: 12 }}>{t("tree.timer.sessions_completed", { count: sessionCount })}</Text>
           </View>
 
           <View style={styles.controls}>
@@ -230,7 +255,9 @@ export default function PomodoroTimer({
               {timeLeft === 0 ? (
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                   <MaterialCommunityIcons name="check-circle" size={24} color="#ffffff" />
-                  <Text style={{ color: "#ffffff", fontWeight: "700" }}>{mode === "focus" ? "Collect Growth" : "Go to Focus"}</Text>
+                  <Text style={{ color: "#ffffff", fontWeight: "700" }}>
+                    {mode === "focus" ? t("tree.timer.collect_growth") : t("tree.timer.go_to_focus")}
+                  </Text>
                 </View>
               ) : (
                 <MaterialCommunityIcons
@@ -257,12 +284,12 @@ export default function PomodoroTimer({
 
           <View style={[styles.tips, { backgroundColor: isDark ? "#374151" : colors.surfaceVariant }]}>
             <Text style={[styles.tipsTitle, { color: colors.text }]}>
-              {mode === "focus" ? "💡 Focus Tip" : "🧘 Break Tip"}
+              {mode === "focus" ? t("tree.timer.focus_tip") : t("tree.timer.break_tip")}
             </Text>
             <Text style={[styles.tipsText, { color: colors.textSecondary }]}>
               {mode === "focus" 
-                ? "Break down your big goal into tiny manageable tasks." 
-                : "Stand up and stretch your back for 30 seconds."}
+                ? t("tree.timer.tip_focus_text") 
+                : t("tree.timer.tip_break_text")}
             </Text>
           </View>
         </View>
@@ -288,7 +315,9 @@ const styles = StyleSheet.create({
   modeToggle: {
     flexDirection: "row",
     backgroundColor: "transparent",
-    gap: spacing.sm,
+    gap: spacing.xs,
+    flex: 1,
+    marginHorizontal: spacing.sm,
   },
   timerCircle: {
     marginVertical: spacing.lg,

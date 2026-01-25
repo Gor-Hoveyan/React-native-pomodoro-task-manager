@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import { useAppTheme } from "../hooks/useAppTheme";
 import { spacing, typography } from "../lib/theme";
@@ -10,6 +11,7 @@ interface ActivityFeedProps {
 
 export default function ActivityFeed({ activities }: ActivityFeedProps) {
   const { colors, isDark } = useAppTheme();
+  const { t } = useTranslation();
 
   const getIcon = (type: Activity["type"]) => {
     switch (type) {
@@ -29,9 +31,9 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
   const formatTimestamp = (ts: number) => {
     const diff = Date.now() - ts;
     const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins}m ago`;
+    if (mins < 60) return t("common.m_ago", { count: mins });
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h ago`;
+    if (hours < 24) return t("common.h_ago", { count: hours });
     return new Date(ts).toLocaleDateString();
   };
 
@@ -39,14 +41,14 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
     return (
       <View style={styles.empty}>
         <MaterialCommunityIcons name="history" size={40} color={colors.textTertiary} />
-        <Text style={[styles.emptyText, { color: colors.textTertiary }]}>No recent activity</Text>
+        <Text style={[styles.emptyText, { color: colors.textTertiary }]}>{t("tree.no_activity")}</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: colors.text }]}>Recent Activity</Text>
+      <Text style={[styles.title, { color: colors.text }]}>{t("tree.recent_activity")}</Text>
       {activities.map((item, index) => {
         const icon = getIcon(item.type);
         return (

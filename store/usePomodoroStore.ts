@@ -1,8 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import i18n from '../lib/i18n';
 
 export type AppTheme = 'light' | 'dark';
+export type AppLanguage = 'en' | 'hy' | 'ru';
 
 interface AppState {
   // Persistence state
@@ -15,6 +17,7 @@ interface AppState {
   
   // Settings
   theme: AppTheme;
+  language: AppLanguage;
   soundEnabled: boolean;
   hapticsEnabled: boolean;
   
@@ -25,6 +28,7 @@ interface AppState {
   setLongBreakDuration: (duration: number) => void;
   toggleTheme: () => void;
   setTheme: (theme: AppTheme) => void;
+  setLanguage: (lang: AppLanguage) => void;
   setSoundEnabled: (enabled: boolean) => void;
   setHapticsEnabled: (enabled: boolean) => void;
   reset: () => void;
@@ -38,6 +42,7 @@ export const useAppStore = create<AppState>()(
       shortBreakDuration: 5,
       longBreakDuration: 15,
       theme: 'light',
+      language: (i18n.language as AppLanguage) || 'en',
       soundEnabled: true,
       hapticsEnabled: true,
       
@@ -47,6 +52,10 @@ export const useAppStore = create<AppState>()(
       setLongBreakDuration: (duration: number) => set({ longBreakDuration: duration }),
       toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
       setTheme: (theme: AppTheme) => set({ theme }),
+      setLanguage: (lang: AppLanguage) => {
+        i18n.changeLanguage(lang);
+        set({ language: lang });
+      },
       setSoundEnabled: (enabled: boolean) => set({ soundEnabled: enabled }),
       setHapticsEnabled: (enabled: boolean) => set({ hapticsEnabled: enabled }),
       reset: () => set({
@@ -54,6 +63,7 @@ export const useAppStore = create<AppState>()(
         shortBreakDuration: 5,
         longBreakDuration: 15,
         theme: 'light',
+        language: 'en',
         soundEnabled: true,
         hapticsEnabled: true,
       }),
@@ -63,6 +73,9 @@ export const useAppStore = create<AppState>()(
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
         state?.setHydrated(true);
+        if (state?.language) {
+          i18n.changeLanguage(state.language);
+        }
       },
     }
   )
