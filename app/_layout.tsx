@@ -1,8 +1,3 @@
-import {
-    DarkTheme,
-    DefaultTheme,
-    ThemeProvider,
-} from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
@@ -16,6 +11,7 @@ export const unstable_settings = {
 export default function RootLayout() {
   const { isDark } = useAppTheme();
   const isHydrated = useAppStore((state) => state.isHydrated);
+  console.log(globalThis.performance.rnStartupTiming);
 
   // Don't render until hydration is complete to prevent theme flash
   if (!isHydrated) {
@@ -23,11 +19,15 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+    <>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(tabs)"
+          options={{ headerShown: false }}
+        />
       </Stack>
+
       <StatusBar style={isDark ? "light" : "dark"} />
-    </ThemeProvider>
+    </>
   );
 }
